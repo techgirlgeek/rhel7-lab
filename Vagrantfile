@@ -40,6 +40,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "generic/rhel7"
   config.hostmanager.enabled = true
   config.hostmanager.include_offline = true
+  config.hostmanager.manager_guest = true
 
   config.vm.provider :virtualbox do |v|
     v.memory = 4096
@@ -85,32 +86,13 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "server2" do |server2|
-    server2.vm.hostname = "server2.localdev"
-    server2.vm.network "private_network", ip: "192.168.56.46"
-    #server1.vm.network "forwarded_port", guest: 3306, host: 3306
-    server2.vm.provision "shell", inline: register_script
-    server2.hostmanager.aliases = %w(server2)
-
-    server2.vm.synced_folder "provision/", "/vagrant/provision"
-      server2.vm.provision "ansible_local" do |ansible|
-        ansible.compatibility_mode = (ansible_mode)
-        ansible.playbook = "provision/clients.yml"
-        ansible.verbose = true
-    end
-
-    server2.trigger.before :destroy do |trigger|
-      trigger.info = "Unregistering from Red Hat subscription"
-      trigger.run_remote = {inline: unregister_script}
-    end
-  end
-
-  (3..4).each do |i|
+  # Create servers 2-4 in a loop
+  (2..4).each do |i|
     config.vm.define "server#{i}" do |node|
-      node.vm.hostname = "server2.localdev"
+      node.vm.hostname = "server#{i}.localdev"
       node.vm.network "private_network", ip: "192.168.56.#{i}"
       node.vm.provision "shell", inline: register_script
-      node.hostmanager.aliases = %w("server#{i}")
+      node.hostmanager.aliases = "server#{i}"
 
       node.vm.synced_folder "provision/", "/vagrant/provision"
         node.vm.provision "ansible_local" do |ansible|
