@@ -69,7 +69,7 @@
         group: root
         mode: '0644'
 
-    - name: Enable vagrant machine to be a router for hosts on 192.168.80.0 network
+    - name: Enable vagrant machine to be a router for hosts on 192.168.56.0 network
       ansible.posix.sysctl:
         name: "{{ item }}"
         value: '1'
@@ -83,10 +83,6 @@
       ansible.builtin.command: /sbin/ifup eth1
       register: eth1_info
       changed_when: eth1_info.rc != 0
-
-    # - name: What is in the eth1_info
-    #   debug:
-    #     var: eth1_info.rc
 
     - name: Create dhpd.conf to serve dhcp on 192.168.80.0 Network
       ansible.builtin.copy:
@@ -225,4 +221,3 @@
       loop:
         - { host: server1.localdev, ipaddr: 192.168.56.45 }
         - { host: dbserver1.localdev, ipaddr: 192.168.80.47 }
-        # - { host: serverc, ipaddr: 192.168.80.23 }
