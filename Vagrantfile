@@ -6,8 +6,6 @@
 user = ENV['RHSM_USER']
 password = ENV['RHSM_PASS']
 
-ENV["LC_ALL"] = "en_US.UTF-8"
-
 ansible_mode = "2.0"
 
 if !user or !password
@@ -32,6 +30,8 @@ fi
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
+
+  ENV["LC_ALL"] = "en_US.UTF-8"
 
   if Vagrant.has_plugin?("vagrant-vbguest") then
     config.vbguest.auto_update = false
@@ -131,25 +131,3 @@ Vagrant.configure("2") do |config|
     end
   end
 end
-
-
-  # config.vm.provision "shell", privileged: false, inline: <<-SHELL
-  #   echo 'Installing required packages...'
-  #   sudo yum upgrade -y > /dev/null
-  #   sudo yum install gcc openssl-devel bzip2-devel libffi-devel make zlib-devel ncurses-devel sqlite-devel readline-devel -y > /dev/null
-  #   echo 'Installing git ...'
-  #   sudo yum install git -y
-  #   echo 'Installing pyenv...'
-  #   curl -s https://pyenv.run | bash > /dev/null 2>&1
-  #   echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
-  #   echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-  #   echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
-  #   source ~/.bashrc
-  #   echo 'Installing Python 3.8.0...'
-  #   pyenv install 3.8.6 > /dev/null 2>&1
-  #   pyenv global 3.8.6 > /dev/null 2>&1
-  #   echo 'Installing bpython - a fancy interface to the Python interpreter...'
-  #   pip install --upgrade pip > /dev/null
-  #   pip install bpython > /dev/null 2>&1
-  # SHELL
-
