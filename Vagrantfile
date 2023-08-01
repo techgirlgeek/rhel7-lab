@@ -52,8 +52,8 @@ Vagrant.configure("2") do |config|
   config.vm.define "controller" do |controller|
     controller.vm.box = "roboxes/alma8"
     controller.vm.hostname = "controller.localdev"
-    controller.vm.network "private_network", ip: "192.168.56.10"
-      #virtualbox__intnet: "ClientNetwork"
+    controller.vm.network "private_network", ip: "192.168.56.10",
+      virtualbox__intnet: "TowerNetwork"
     controller.vm.network "forwarded_port", id: "ssh", guest: 22, host: 2235
     controller.hostmanager.aliases = %w(controller)
 
@@ -68,8 +68,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "server1" do |server1|
     server1.vm.hostname = "server1.localdev"
-    server1.vm.network "private_network", ip: "192.168.56.45"
-    #server1.vm.network "forwarded_port", guest: 3306, host: 3306
+    server1.vm.network "private_network", ip: "192.168.56.45",
+      virtualbox__intnet: "TowerNetwork"
+    server1.vm.network "forwarded_port", guest: 443, host: 8443
     server1.vm.provision "shell", inline: register_script
     server1.hostmanager.aliases = %w(server1)
 
@@ -90,7 +91,8 @@ Vagrant.configure("2") do |config|
   (2..4).each do |i|
     config.vm.define "server#{i}" do |node|
       node.vm.hostname = "server#{i}.localdev"
-      node.vm.network "private_network", ip: "192.168.56.#{i}"
+      node.vm.network "private_network", ip: "192.168.56.#{i}",
+        virtualbox__intnet: "TowerNetwork"
       node.vm.provision "shell", inline: register_script
       node.hostmanager.aliases = "server#{i}"
 
@@ -110,8 +112,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "dbserver1" do |dbserver1|
     dbserver1.vm.hostname = "dbserver1.localdev"
-    dbserver1.vm.network "private_network", ip: "192.168.56.47"
-    dbserver1.vm.network "forwarded_port", guest: 3306, host: 3306
+    dbserver1.vm.network "private_network", ip: "192.168.56.47",
+      virtualbox__intnet: "TowerNetwork"
+    dbserver1.vm.network "forwarded_port", guest: 5432, host: 5432
     dbserver1.vm.provision "shell", inline: register_script
     dbserver1.hostmanager.aliases = %w(dbserver1)
 
